@@ -1,0 +1,4 @@
+push 40
+push 10
+out
+hlt

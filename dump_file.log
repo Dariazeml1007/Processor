@@ -1,0 +1,115 @@
+=========================================
+file : source/process.cpp
+line : 68
+address stack_structure : 0x0061FE68
+size : 0,  address size : 0x0061FE6C
+capacity : 10,  address capacity : 0x0061FE70
+address dump file : 0x0061FE74
+address memory report file 0x0061FE78
+hash : 5381, address hash : 0x0061FE7C
+poison :66666, address poison : 0x0061FE80
+address pointer left canary : 0x0061FE84
+address pointer right canary : 0x0061FE88
+stack : 0x010A1644
+left_canary : 0x010A1640 value :3565
+data[0] = 66666 address = 0x010A1644
+data[1] = 66666 address = 0x010A1648
+data[2] = 66666 address = 0x010A164C
+data[3] = 66666 address = 0x010A1650
+data[4] = 66666 address = 0x010A1654
+data[5] = 66666 address = 0x010A1658
+data[6] = 66666 address = 0x010A165C
+data[7] = 66666 address = 0x010A1660
+data[8] = 66666 address = 0x010A1664
+data[9] = 66666 address = 0x010A1668
+right_canary : 0x010A166C value : 3802
+=========================================
+file : source/process.cpp
+line : 68
+address stack_structure : 0x0061FE68
+size : 1,  address size : 0x0061FE6C
+capacity : 10,  address capacity : 0x0061FE70
+address dump file : 0x0061FE74
+address memory report file 0x0061FE78
+hash : 2087911085, address hash : 0x0061FE7C
+poison :66666, address poison : 0x0061FE80
+address pointer left canary : 0x0061FE84
+address pointer right canary : 0x0061FE88
+stack : 0x010A1644
+left_canary : 0x010A1640 value :3565
+*data[0] = 40 address = 0x010A1644
+data[1] = 66666 address = 0x010A1648
+data[2] = 66666 address = 0x010A164C
+data[3] = 66666 address = 0x010A1650
+data[4] = 66666 address = 0x010A1654
+data[5] = 66666 address = 0x010A1658
+data[6] = 66666 address = 0x010A165C
+data[7] = 66666 address = 0x010A1660
+data[8] = 66666 address = 0x010A1664
+data[9] = 66666 address = 0x010A1668
+right_canary : 0x010A166C value : 3802
+=========================================
+file : source/process.cpp
+line : 68
+address stack_structure : 0x0061FE68
+size : 2,  address size : 0x0061FE6C
+capacity : 10,  address capacity : 0x0061FE70
+address dump file : 0x0061FE74
+address memory report file 0x0061FE78
+hash : 1711409399, address hash : 0x0061FE7C
+poison :66666, address poison : 0x0061FE80
+address pointer left canary : 0x0061FE84
+address pointer right canary : 0x0061FE88
+stack : 0x010A1644
+left_canary : 0x010A1640 value :3565
+*data[0] = 40 address = 0x010A1644
+*data[1] = 10 address = 0x010A1648
+data[2] = 66666 address = 0x010A164C
+data[3] = 66666 address = 0x010A1650
+data[4] = 66666 address = 0x010A1654
+data[5] = 66666 address = 0x010A1658
+data[6] = 66666 address = 0x010A165C
+data[7] = 66666 address = 0x010A1660
+data[8] = 66666 address = 0x010A1664
+data[9] = 66666 address = 0x010A1668
+right_canary : 0x010A166C value : 3802
+=========================================
+file : source/operators.cpp
+line : 92
+address stack_structure : 0x0061FE68
+size : 1,  address size : 0x0061FE6C
+capacity : 5,  address capacity : 0x0061FE70
+address dump file : 0x0061FE74
+address memory report file 0x0061FE78
+hash : 2087911085, address hash : 0x0061FE7C
+poison :66666, address poison : 0x0061FE80
+address pointer left canary : 0x0061FE84
+address pointer right canary : 0x0061FE88
+stack : 0x010A1644
+left_canary : 0x010A1640 value :3565
+*data[0] = 40 address = 0x010A1644
+data[1] = 10 address = 0x010A1648
+data[2] = 66666 address = 0x010A164C
+data[3] = 66666 address = 0x010A1650
+data[4] = 66666 address = 0x010A1654
+right_canary : 0x010A1658 value : 3802
+=========================================
+file : source/process.cpp
+line : 68
+address stack_structure : 0x0061FE68
+size : 1,  address size : 0x0061FE6C
+capacity : 5,  address capacity : 0x0061FE70
+address dump file : 0x0061FE74
+address memory report file 0x0061FE78
+hash : 2087911085, address hash : 0x0061FE7C
+poison :66666, address poison : 0x0061FE80
+address pointer left canary : 0x0061FE84
+address pointer right canary : 0x0061FE88
+stack : 0x010A1644
+left_canary : 0x010A1640 value :3565
+*data[0] = 40 address = 0x010A1644
+data[1] = 10 address = 0x010A1648
+data[2] = 66666 address = 0x010A164C
+data[3] = 66666 address = 0x010A1650
+data[4] = 66666 address = 0x010A1654
+right_canary : 0x010A1658 value : 3802
