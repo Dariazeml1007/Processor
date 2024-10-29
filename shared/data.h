@@ -20,6 +20,13 @@ typedef enum
     DIV  = 5,
     OUT  = 6,
     IN   = 7,
+    JMP  = 8,
+    JA  =  9,
+    JB  =  10,
+    JAE  = 11,
+    JBE  = 12,
+    JE  =  13,
+    JNE  = 14,
     HLT  = 0
 
 }Command;

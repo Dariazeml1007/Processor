@@ -11,4 +11,13 @@ int out (SPU *my_spu);
 int in  (SPU *my_spu);
 int get_arg (SPU *my_spu);
 
+int jmp (SPU *my_spu);
+int ja (SPU *my_spu);
+int jb (SPU *my_spu);
+int jae (SPU *my_spu);
+int jbe (SPU *my_spu);
+int jne (SPU *my_spu);
+int je (SPU *my_spu);
+
+
 #endif

@@ -24,13 +24,13 @@ int main()
     spu_ctor(&my_spu, DUMP_CODE);
 
 
-    my_spu.registers[2] = -5;
-    my_spu.RAM[7] = 200;
+    // my_spu.registers[2] = -5;
+    // my_spu.RAM[7] = 200;
 
 
     StackElem_t POISON = 66666;
     stack_ctor (&my_spu.stk, 10, POISON);
-
+    stack_push(&my_spu.stk, 40);
     read_commands (&my_spu.code_of_command, OUTPUT_FILE);
 
     dump_code (&my_spu);

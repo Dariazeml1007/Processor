@@ -25,14 +25,21 @@ typedef enum
 
 Type_of_command massive_of_commands[] =
 {
-    {"push", 1},
-    {"add" , 2},
-    {"sub" , 3},
-    {"mul" , 4},
-    {"div" , 5},
-    {"out" , 6},
-    {"in"  , 7},
-    {"hlt" , 0}
+    {"push",  1},
+    {"add" ,  2},
+    {"sub" ,  3},
+    {"mul" ,  4},
+    {"div" ,  5},
+    {"out" ,  6},
+    {"in"  ,  7},
+    {"jmp" ,  8},
+    {"ja"  ,  9},
+    {"jb"  , 10},
+    {"jae" , 11},
+    {"jbe" , 12},
+    {"je"  , 13},
+    {"jne" , 14},
+    {"hlt" ,  0}
 };
 
 Type_of_command massive_of_regs[] =
@@ -45,6 +52,7 @@ Type_of_command massive_of_regs[] =
 
 int type_of_command (const char* command, Str_command_t type);
 int arg_push (int *code, size_t *ip, FILE *file);
+int arg_jmp (int *code, size_t *ip, FILE *file);
 
 int scan_ram_value (int *code, size_t *ip, int value);
 int scan_value (int *code, size_t *ip, int value);
@@ -91,7 +99,11 @@ int assembler (asm_struct *my_asm)
             if (arg_push(my_asm->code, &amount_of_command, my_asm->file_in) == ERROR_WITH_READ)
                 printf("ERROR\n");
         }
-
+        if (type >= JMP && type <= JNE)
+        {
+            if (arg_jmp(my_asm->code, &amount_of_command, my_asm->file_in) == ERROR_WITH_READ)
+                printf("ERROR\n");
+        }
         if (type == HLT)
             break;
     }
@@ -270,6 +282,17 @@ int arg_push (int *code, size_t *ip, FILE *file)
     return ERROR_WITH_READ;
 }
 
+int arg_jmp (int *code, size_t *ip, FILE *file)
+{
+    int value = 0;
+    if (fscanf(file, "%d", &value) == 1)
+    {
+        code[(*ip)++] = value;
+        return OK;
+    }
+    else
+        return ERROR_WITH_READ;
+}
 int asm_ctor (asm_struct *my_asm)
 {
     assert(my_asm);

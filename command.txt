@@ -1,4 +1,6 @@
-push 40
-push 10
+in
+in
+je 0
+push 13
 out
 hlt

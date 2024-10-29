@@ -21,12 +21,19 @@ struct functions_struct
 functions_struct functions_array[] =
 {
     {&get_arg, PUSH},
-    {&add, ADD },
-    {&sub, SUB },
-    {&mul, MUL },
-    {&divide, DIV },
-    {&out, OUT },
-    {&in,  IN  }
+    {&add,     ADD },
+    {&sub,     SUB },
+    {&mul,     MUL },
+    {&divide,  DIV },
+    {&out,     OUT },
+    {&in,      IN  },
+    {&jmp,     JMP },
+    {&ja,      JA  },
+    {&jb,      JB  },
+    {&jae,     JAE },
+    {&jbe,     JBE },
+    {&je,      JE  },
+    {&jne,     JNE },
 };
 
 int spu_ctor(SPU *my_spu, const char *dump)
@@ -48,6 +55,7 @@ int spu_dtor (SPU *my_spu)
     assert (my_spu);
 
     fclose(my_spu->code_of_command.test_file);
+    fclose(my_spu->dump);
     free(my_spu->code_of_command.code);
     dtor(&my_spu->stk);
 
@@ -106,5 +114,6 @@ void dump_code (SPU *my_spu)
         else
             fprintf (my_spu->dump, "code[%d] = %d\n",i, my_spu->code_of_command.code[i]);
     }
+
     fprintf (my_spu->dump, "\n----------------------------------------\n");
 }
