@@ -8,8 +8,9 @@
 
 #include "asm.h"
 #include "data.h"
+#include "label.h"
 
-// 1 push, 2 add, 3 sub, 4 mul, 5 div, 6 out,7 in, 0 hlt
+// 1 push, 2 add, 3 sub, 4 mul, 5 div, 6 out, 7 in, 0 hlt
 
 struct Type_of_command
 {
@@ -17,28 +18,23 @@ struct Type_of_command
     int code_of_command ;
 };
 
-typedef enum
-{
-    COMMAND = 1,
-    REG_CELL = 2
-}Str_command_t;
-
 Type_of_command massive_of_commands[] =
 {
     {"push",  1},
-    {"add" ,  2},
-    {"sub" ,  3},
-    {"mul" ,  4},
-    {"div" ,  5},
-    {"out" ,  6},
-    {"in"  ,  7},
-    {"jmp" ,  8},
-    {"ja"  ,  9},
-    {"jb"  , 10},
-    {"jae" , 11},
-    {"jbe" , 12},
-    {"je"  , 13},
-    {"jne" , 14},
+    {"pop" ,  2},
+    {"add" ,  3},
+    {"sub" ,  4},
+    {"mul" ,  5},
+    {"div" ,  6},
+    {"out" ,  7},
+    {"in"  ,  8},
+    {"jmp" ,  9},
+    {"ja"  , 10},
+    {"jb"  , 11},
+    {"jae" , 12},
+    {"jbe" , 13},
+    {"je"  , 14},
+    {"jne" , 15},
     {"hlt" ,  0}
 };
 
@@ -50,255 +46,374 @@ Type_of_command massive_of_regs[] =
     {"dx", 4}
 };
 
-int type_of_command (const char* command, Str_command_t type);
-int arg_push (int *code, size_t *ip, FILE *file);
-int arg_jmp (int *code, size_t *ip, FILE *file);
+int type_of_reg(char *command);
+int type_of_command(asm_struct *my_asm);
+int arg_push_pop (asm_struct *my_asm, size_t *ip);
+int arg_jmp (asm_struct *my_asm, size_t *ip);
 
-int scan_ram_value (int *code, size_t *ip, int value);
-int scan_value (int *code, size_t *ip, int value);
-int scan_sum_ram (int *code, size_t *ip, int value, char *command);
-int scan_str_ram (int *code, size_t *ip, char *command);
-int scan_sum_reg (int *code, size_t *ip, int value, char *command);
-int scan_str_reg (int *code, size_t *ip, char *command);
+int scan_ram_value (asm_struct *my_asm, size_t *ip, int value);
+int scan_value     (asm_struct *my_asm, size_t *ip, int value);
+int scan_sum_ram   (asm_struct *my_asm, size_t *ip, int value, char *command);
+int scan_str_ram   (asm_struct *my_asm, size_t *ip, char *command);
+int scan_sum_reg   (asm_struct *my_asm, size_t *ip, int value, char *command);
+int scan_str_reg   (asm_struct *my_asm, size_t *ip, char *command);
+
+int skip_spaces    (asm_struct *my_asm);
+int skip_until_new_command (asm_struct *my_asm);
+
+bool is_label (asm_struct *my_asm, size_t *ip, char *label);
+
+int skip_until_new_command (asm_struct *my_asm)
+{
+    while (my_asm->buffer[my_asm->index] != '\n')
+            my_asm->index++;
+    my_asm->index++;
+
+    return 0;
+}
+int skip_spaces (asm_struct *my_asm)
+{
+    assert(my_asm);
+    while (my_asm->buffer[my_asm->index] == ' ')
+        my_asm->index++;
+    return 0;
+}
 
 int assembler (asm_struct *my_asm)
 {
     assert(my_asm);
 
-    char c = '0';
-    int count = 0;
-
-    for (int i = 0; i < my_asm->size; i++)
-    {
-        fscanf(my_asm->file_in, "%c", &c);
-        if (c == '\n')
-            count++;
-    }
-
+    fread(my_asm->buffer, sizeof(char), my_asm->size, my_asm->file_in);
     fseek(my_asm->file_in, 0, SEEK_SET);
-    //
-
-    char command[50] = {};
 
 
     unsigned int amount_of_command = 0;
 
-    for (int i = 0; i < count; i++)
+    while (my_asm->buffer[my_asm->index] != '\0')
     {
-        fscanf(my_asm->file_in, "%s", command);
-        int type = type_of_command(command, COMMAND);
-        if (type < 0)
+        int type = type_of_command(my_asm);
+        if (type == ASM_POSSIBLE_LABEL)
         {
-            printf ("error with %s\n", command);
-            return ERROR_WITH_READ;
-        }
-        my_asm->code[amount_of_command++] = type;
 
-        if (type == PUSH)
-        {
-            if (arg_push(my_asm->code, &amount_of_command, my_asm->file_in) == ERROR_WITH_READ)
-                printf("ERROR\n");
+            char *label= (char *) calloc(50, sizeof(char));
+            if (is_label(my_asm, &amount_of_command, label))
+            {
+                definition_of_label(my_asm->p_labels, label, &amount_of_command);
+                skip_until_new_command(my_asm);
+            }
+            else
+            {
+                printf ("Wrong command");
+                assert(0);
+            }
+
         }
-        if (type >= JMP && type <= JNE)
+        else
         {
-            if (arg_jmp(my_asm->code, &amount_of_command, my_asm->file_in) == ERROR_WITH_READ)
-                printf("ERROR\n");
+
+            my_asm->code[amount_of_command++] = type;
+
+            if (type == PUSH || type == POP)
+            {
+                if (arg_push_pop(my_asm, &amount_of_command) == ASM_ERROR_WITH_READ)
+                    printf("ERROR\n");
+            }
+            if (type >= JMP && type <= JNE)
+            {
+                if (arg_jmp(my_asm, &amount_of_command) == ASM_ERROR_WITH_READ)
+                    printf("ERROR\n");
+
+            }
+            if (type == HLT)
+                break;
+
+            skip_until_new_command(my_asm);
         }
-        if (type == HLT)
-            break;
     }
 
     if (fwrite(my_asm->code, sizeof(int), amount_of_command, my_asm->file_out) != amount_of_command)
         printf("Problem with writing\n");
 
+    fill_gaps_in_code(my_asm);
+
     for (size_t i = 0; i < amount_of_command; i++)
         printf ("%d ",my_asm->code[i]);
+    printf("\n");
+
+    for (size_t i = 0; i < my_asm->p_labels->amount_of_fix_up; i++)
+    {
+        printf("index = %d, ip = %d", my_asm->p_labels->fix_up_array[i].index_label, my_asm->p_labels->fix_up_array[i].ip_use);
+    }
+    printf("\n");
+
+    printf ("amount of labels = %d\n", my_asm->p_labels->amount_of_labels);
+    for (size_t i = 0; i < my_asm->p_labels->amount_of_labels; i++)
+    {
+        printf("name = %s, addr = %p, ip = %d\n", my_asm->p_labels->label_array[i].name,&my_asm->p_labels->label_array[i].name, my_asm->p_labels->label_array[i].ip);
+    }
     return 0;
 }
 
-int type_of_command (const char* command, Str_command_t type)
+int fill_gaps_in_code (asm_struct *my_asm)
 {
-    if (type == COMMAND)
+    assert(my_asm);
+    bool flag = false;
+    for (size_t i = 0; i < my_asm->p_labels->amount_of_labels; i++)
     {
-        int size_of_array = sizeof(massive_of_commands) / sizeof(massive_of_commands[0]);
-
-        for (int i = 0; i < size_of_array; i++)
+        if (my_asm->p_labels->label_array[i].is_set)
         {
-            if (strcmp(command, massive_of_commands[i].name_command) == 0)
-                return massive_of_commands[i].code_of_command;
+            for (size_t j = 0; j < my_asm->p_labels->amount_of_fix_up; j++)
+                if (i == my_asm->p_labels->fix_up_array[j].index_label)
+                {
+                    my_asm->code[my_asm->p_labels->fix_up_array[j].ip_use] = my_asm->p_labels->label_array[i].ip;
+                    flag = true;
+                }
+            if (!flag)
+            {
+                printf ("Not recognised label, fix up");
+                assert(0);
+            }
+        }
+        else
+        {
+            printf ("Not recognised label");
+            assert(0);
         }
 
     }
+    return 0;
 
-    if (type == REG_CELL)
+}
+
+
+int type_of_reg(char *command)
+{
+    size_t size_of_array = size_reg;
+
+    for (size_t i = 0; i < size_of_array; i++)
     {
-        size_t size_of_array = size_reg;
-
-        for (size_t i = 0; i < size_of_array; i++)
+        if (strcmp(massive_of_regs[i].name_command, command) == 0)
         {
-        if (strcmp(command, massive_of_regs[i].name_command) == 0)
+
             return massive_of_regs[i].code_of_command;
         }
-
     }
     printf("No such command %s\n", command);
-    return ERROR_WITH_READ;
+    return ASM_ERROR_WITH_READ;
 }
 
-int scan_ram_value (int *code, size_t *ip, int value)
+int type_of_command (asm_struct *my_asm)
 {
-    assert(code);
+    int size_of_array = sizeof(massive_of_commands) / sizeof(massive_of_commands[0]);
+    for (int i = 0; i < size_of_array; i++)
+    {
+        int len = strlen(massive_of_commands[i].name_command);
+        if ((strncmp(my_asm->buffer + my_asm->index, massive_of_commands[i].name_command, len)) == 0)
+        {
+            my_asm->index += len;
+            return massive_of_commands[i].code_of_command;
+        }
+    }
+
+    return ASM_POSSIBLE_LABEL;
+}
+
+int arg_jmp (asm_struct *my_asm, size_t *ip)
+{
+    assert(my_asm);
     assert (ip);
 
-    code[(*ip)++] = 5;
-
-    code[(*ip)++] = value;
-
-    return 0;
-}
-
-int scan_value (int *code, size_t *ip, int value)
-{
-    assert(code);
-    assert (ip);
-
-    code[(*ip)++] = 1;
-    code[(*ip)++] = value;
-
-    return 0;
-}
-
-int scan_sum_ram (int *code, size_t *ip, int value, char *command)
-{
-    assert(code);
-    assert (ip);
-    assert(command);
-
-    code[(*ip)++] = 7;
-    int type = type_of_command(command, REG_CELL);
-    if (type < 0)
-        return ERROR_WITH_READ;
-    code[(*ip)++] = value;
-
-    return 0;
-
-}
-
-int scan_str_ram (int *code, size_t *ip, char *command)
-{
-    assert(code);
-    assert (ip);
-    assert(command);
-
-    code[(*ip)++] = 6;
-
-    command[2] ='\0';
-    int type = type_of_command(command, REG_CELL);
-
-    if (type < 0)
-        return ERROR_WITH_READ;
-    code[(*ip)++] = type;
-
-    return 0;
-}
-
-int scan_sum_reg (int *code, size_t *ip, int value, char *command)
-{
-    assert(code);
-    assert (ip);
-    assert(command);
-
-    code[(*ip)++] = 3;
-    int type = type_of_command(command, REG_CELL);
-    if (type < 0)
-        return ERROR_WITH_READ;
-
-    code[(*ip)++] = type;
-    code[(*ip)++] = value;
-
-    return 0;
-
-}
-
-int scan_str_reg(int *code, size_t *ip, char *command)
-{
-    assert(code);
-    assert (ip);
-    assert(command);
-
-    code[(*ip)++] = 2;
-
-    code[(*ip)++] = type_of_command(command, REG_CELL);
-
-    return 0;
-}
-
-int arg_push (int *code, size_t *ip, FILE *file)
-{
     int value = 0;
-    char command[50] = {};
+    char *label = (char*)calloc(50, sizeof(char));
+    if (sscanf (my_asm->buffer + my_asm->index, "%d", &value) == 1)
+        my_asm->code[(*ip)++] = value;
 
-    if (fscanf(file, "[%d]", &value) == 1)
+    else if (is_label(my_asm, ip, label))
     {
-        scan_ram_value(code, ip, value);
-        return OK;
+        my_asm->code[(*ip)++] = jmp_at_label(my_asm->p_labels, label, ip);
     }
 
-    if (fscanf(file, "%d", &value) == 1)
-    {
-        scan_value(code, ip, value);
-        return OK;
-    }
-
-    int amount_of_read = fscanf(file, "[%s + %d]", command, &value);
-
-    if (amount_of_read == 2)
-    {
-
-        scan_sum_ram(code, ip, value, command);
-        return OK;
-    }
-
-    if (amount_of_read == 1)
-    {
-        scan_str_ram(code, ip, command);
-        return OK;
-    }
-
-    amount_of_read = fscanf(file, "%s + %d", command, &value);
-
-    if (amount_of_read == 2)
-    {
-        scan_sum_reg(code, ip, value, command);
-        return OK;
-    }
-
-    if (amount_of_read == 1)
-    {
-        scan_str_reg(code, ip, command);
-        return OK;
-    }
-
-    return ERROR_WITH_READ;
-}
-
-int arg_jmp (int *code, size_t *ip, FILE *file)
-{
-    int value = 0;
-    if (fscanf(file, "%d", &value) == 1)
-    {
-        code[(*ip)++] = value;
-        return OK;
-    }
     else
-        return ERROR_WITH_READ;
+    {
+        printf("Error with command jmp, word after is not a label\n");
+        return ASM_UNDEFINED_LABEL;
+    }
+
+    return 0;
+
 }
+
+bool is_label (asm_struct *my_asm, size_t *ip, char *label)
+{
+    assert(my_asm);
+    assert(ip);
+
+    if (sscanf (my_asm->buffer + my_asm->index, "%s", label) == 1)
+    {
+        int i = 0;
+        while (label[i] != '\0')
+        {
+            i++;
+        }
+        i--;
+        return (label[i] == ':');
+    }
+    return false;
+}
+
+int scan_ram_value (asm_struct *my_asm, size_t *ip, int value)
+{
+    assert(my_asm);
+    assert (ip);
+
+    my_asm->code[(*ip)++] = 5;
+
+    my_asm->code[(*ip)++] = value;
+
+    return 0;
+}
+
+int scan_value (asm_struct *my_asm, size_t *ip, int value)
+{
+    assert(my_asm);
+    assert (ip);
+
+    my_asm->code[(*ip)++] = 1;
+    my_asm->code[(*ip)++] = value;
+
+    return 0;
+}
+
+int scan_sum_ram (asm_struct *my_asm, size_t *ip, int value, char *command)
+{
+    assert(my_asm);
+    assert (ip);
+    assert(command);
+
+    my_asm->code[(*ip)++] = 7;
+    int type = type_of_reg(command);
+    if (type < 0)
+        return ASM_ERROR_WITH_READ;
+    my_asm->code[(*ip)++] = type;
+    my_asm->code[(*ip)++] = value;
+
+    return 0;
+
+}
+
+int scan_str_ram (asm_struct *my_asm, size_t *ip, char *command)
+{
+    assert(my_asm);
+    assert (ip);
+    assert(command);
+
+    my_asm->code[(*ip)++] = 6;
+
+    int type = type_of_reg(command);
+
+    if (type < 0)
+        return ASM_ERROR_WITH_READ;
+    my_asm->code[(*ip)++] = type;
+
+    return 0;
+}
+
+int scan_sum_reg (asm_struct *my_asm, size_t *ip, int value, char *command)
+{
+    assert(my_asm);
+    assert (ip);
+    assert(command);
+
+    my_asm->code[(*ip)++] = 3;
+    int type = type_of_reg(command);
+    if (type < 0)
+        return ASM_ERROR_WITH_READ;
+
+    my_asm->code[(*ip)++] = type;
+    my_asm->code[(*ip)++] = value;
+
+    return 0;
+
+}
+
+int scan_str_reg(asm_struct *my_asm, size_t *ip, char *command)
+{
+    assert(my_asm);
+    assert (ip);
+    assert(command);
+
+    my_asm->code[(*ip)++] = 2;
+
+    my_asm->code[(*ip)++] = type_of_reg(command);
+
+    return 0;
+}
+
+int arg_push_pop (asm_struct *my_asm, size_t *ip)
+{
+    int value = 0;
+    int len = 50;
+    char *command= (char *)calloc(len, sizeof(char));
+    skip_spaces(my_asm);
+
+    if (sscanf(my_asm->buffer + my_asm->index, "[%d]", &value) == 1)
+    {
+        scan_ram_value(my_asm, ip, value);
+        free(command);
+        return ASM_SUCCESS;
+    }
+
+    if (sscanf(my_asm->buffer + my_asm->index, "%d", &value) == 1 && my_asm->code[*ip - 1] == 1)
+    {
+        scan_value(my_asm, ip, value);
+        free(command);
+        return ASM_SUCCESS;
+    }
+
+    int amount_of_read = sscanf(my_asm->buffer + my_asm->index, "[%s + %d]", command, &value);
+
+    if (amount_of_read == 2)
+    {
+
+        scan_sum_ram(my_asm, ip, value, command);
+        free(command);
+        return ASM_SUCCESS;
+    }
+
+    if (amount_of_read == 1)
+    {
+        scan_str_ram(my_asm, ip, command);
+        free(command);
+        return ASM_SUCCESS;
+    }
+
+    amount_of_read = sscanf(my_asm->buffer + my_asm->index, "%s + %d", command, &value);
+   if (amount_of_read == 2)
+    {
+
+        scan_sum_reg(my_asm, ip, value, command);
+        free(command);
+        return ASM_SUCCESS;
+    }
+
+    if (amount_of_read == 1)
+    {
+        scan_str_reg(my_asm, ip, command);
+        free(command);
+        return ASM_SUCCESS;
+    }
+
+    return ASM_ERROR_WITH_READ;
+}
+
+
+
 int asm_ctor (asm_struct *my_asm)
 {
     assert(my_asm);
 
 
-    my_asm->file_in = fopen(my_asm->input_file, "r");
+    my_asm->file_in = fopen(my_asm->input_file, "r");  // check
     my_asm->file_out = fopen(my_asm->output_file, "wb");
 
 
@@ -321,6 +436,14 @@ int asm_ctor (asm_struct *my_asm)
     {
         assert (0 && "Memory Allocation");
     }
+
+    my_asm->buffer = (char*)calloc (my_asm->size, sizeof(char));
+
+    if (!my_asm->buffer)
+    {
+        assert (0 && "Memory Allocation");
+    }
+
     return 0;
 }
 
@@ -342,7 +465,23 @@ int asm_dtor (asm_struct *my_asm)
         assert(0);
     }
 
+    free(my_asm->buffer);
     free(my_asm->code);
 
     return 0;
 }
+
+// int skip_brackets (char **command)
+// {
+//     int i = 0, j = 0;
+//     printf ("command %s\n", *command);
+//     while (*command[i] != '\0')
+//     {
+//         if (*command[i] != '[' && *command[i] != ']')
+//             *command[j++] = *command[i];
+//         i++;
+//     }
+//     *command[j] = '\0';
+//     printf ("command %s\n", *command);
+//     return 0;
+// }

@@ -19,6 +19,8 @@ typedef enum
 int main(const int argc, const char* argv[])
 {
     asm_struct my_asm = {};
+    labels p_labels = {};
+    my_asm.p_labels = &p_labels;
 
     const char *output_file = "../machine_code.bin";
 
@@ -28,7 +30,7 @@ int main(const int argc, const char* argv[])
         return FAILED;
     }
 
-    printf ("%d %s ", argc, argv[1]);
+    printf ("%d %s\n", argc, argv[1]);
     if (argc == 2)
     {
         strcpy(my_asm.input_file, argv[1]);

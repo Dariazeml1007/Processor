@@ -14,14 +14,6 @@ typedef enum
     ADDR_REG = 2
 }Arg;
 
-    // void (*funcions)( &ip)
-    //void (*message) (void)
-// struct functions_struct
-// {
-//     int (*func) (SPU *my_spu);
-//     Command command;
-// };
-
 struct SPU
 {
     struct Stack_t stk ;

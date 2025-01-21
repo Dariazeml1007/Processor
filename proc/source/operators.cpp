@@ -115,7 +115,7 @@ int in (SPU *my_spu)
     return 0;
 }
 
-int get_arg (SPU *my_spu)
+int get_arg_push(SPU *my_spu)
 {
     int arg_t = my_spu->code_of_command.code[my_spu->ip + 1];
     int result = 0;
@@ -145,6 +145,46 @@ int get_arg (SPU *my_spu)
     }
 
     stack_push(&my_spu->stk, result);
+
+    my_spu->ip += 1;
+    return 0;
+
+}
+
+int get_arg_pop(SPU *my_spu)
+{
+    int arg_t = my_spu->code_of_command.code[my_spu->ip + 1];
+    printf ("arg_t %d\n", arg_t);
+    int result = 0;
+    int position = 0;
+    stack_pop(&my_spu->stk, &result);
+
+    if (arg_t & ADDR_REG && !(arg_t & ADDR_RAM))
+    {
+        my_spu->registers[my_spu->code_of_command.code[my_spu->ip + 2] - 1] = result;
+        my_spu->ip++;
+    }
+    if (arg_t & ADDR_RAM)
+    {
+
+        if (arg_t & ADDR_REG)
+        {
+            position += my_spu->registers[my_spu->code_of_command.code[my_spu->ip + 2] - 1];
+            my_spu->ip++;
+        }
+        if (arg_t & VALUE)
+        {
+            position += my_spu->code_of_command.code[my_spu->ip + 2];
+            my_spu->ip++;
+        }
+            my_spu->RAM[position] = result;
+    }
+
+    if (!(arg_t & ADDR_RAM) && !(arg_t & ADDR_REG))
+    {
+        printf("Error\n");
+        return -1;
+    }
 
     my_spu->ip += 1;
     return 0;

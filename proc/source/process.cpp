@@ -20,20 +20,21 @@ struct functions_struct
 
 functions_struct functions_array[] =
 {
-    {&get_arg, PUSH},
-    {&add,     ADD },
-    {&sub,     SUB },
-    {&mul,     MUL },
-    {&divide,  DIV },
-    {&out,     OUT },
-    {&in,      IN  },
-    {&jmp,     JMP },
-    {&ja,      JA  },
-    {&jb,      JB  },
-    {&jae,     JAE },
-    {&jbe,     JBE },
-    {&je,      JE  },
-    {&jne,     JNE },
+    {&get_arg_push,     PUSH},
+    {&get_arg_pop, POP},
+    {&add,         ADD },
+    {&sub,         SUB },
+    {&mul,         MUL },
+    {&divide,      DIV },
+    {&out,         OUT },
+    {&in,          IN  },
+    {&jmp,         JMP },
+    {&ja,          JA  },
+    {&jb,          JB  },
+    {&jae,         JAE },
+    {&jbe,         JBE },
+    {&je,          JE  },
+    {&jne,         JNE },
 };
 
 int spu_ctor(SPU *my_spu, const char *dump)
@@ -76,7 +77,7 @@ int process_code (SPU *my_spu)
         STACK_DUMP(&my_spu->stk);
         dump_code(my_spu);
         int elem = my_spu->code_of_command.code[my_spu->ip];
-
+        printf ("%d\n", elem);
         if (elem == HLT)
         {
             break;
@@ -114,6 +115,27 @@ void dump_code (SPU *my_spu)
         else
             fprintf (my_spu->dump, "code[%d] = %d\n",i, my_spu->code_of_command.code[i]);
     }
+
+    fprintf (my_spu->dump, "\n----------------------------------------\n");
+    fprintf (my_spu->dump, "REG status\n----------------------------------------\n"
+                            "ax = %d\n"
+                            "bx = %d\n"
+                            "cx = %d\n"
+                            "dx = %d\n",
+                            my_spu->registers[0],
+                            my_spu->registers[1],
+                            my_spu->registers[2],
+                            my_spu->registers[3]);
+
+
+    fprintf (my_spu->dump, "\n----------------------------------------\n");
+    fprintf (my_spu->dump, "RAM status\n----------------------------------------\n");
+    for (int i = 0; i <  25; i++)
+    {
+        fprintf(my_spu->dump, " %d", my_spu->RAM[i]);
+    }
+
+
 
     fprintf (my_spu->dump, "\n----------------------------------------\n");
 }

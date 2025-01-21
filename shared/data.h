@@ -3,30 +3,25 @@
 
 int get_size_of_file (const char *name_of_file);
 
-typedef enum
-{
-    STAT_FILE_ERROR = 1,
-    ERROR_WITH_READ = -1,//
-    OK = 0,
-    SUCCESS_GET_SIZE = 0
-}Status_of_read;
+
 
 typedef enum
 {
     PUSH = 1,
-    ADD  = 2,
-    SUB  = 3,
-    MUL  = 4,
-    DIV  = 5,
-    OUT  = 6,
-    IN   = 7,
-    JMP  = 8,
-    JA  =  9,
-    JB  =  10,
-    JAE  = 11,
-    JBE  = 12,
-    JE  =  13,
-    JNE  = 14,
+    POP  = 2,
+    ADD  = 3,
+    SUB  = 4,
+    MUL  = 5,
+    DIV  = 6,
+    OUT  = 7,
+    IN   = 8,
+    JMP  = 9,
+    JA  =  10,
+    JB  =  11,
+    JAE  = 12,
+    JBE  = 13,
+    JE  =  14,
+    JNE  = 15,
     HLT  = 0
 
 }Command;

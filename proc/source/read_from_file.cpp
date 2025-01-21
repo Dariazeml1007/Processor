@@ -32,16 +32,16 @@ int read_commands (Commands *code_of_command, const char *input_file)
     {
         printf ("Allocation memory\n");
         assert(fclose (code_of_command->test_file) == 0);
-        return ERROR_WITH_READ;
+        return PROC_ERROR_WITH_READ;
     }
 
     if (fread(code_of_command->code, sizeof(int), code_of_command->size, code_of_command->test_file) != code_of_command->size)
     {
         printf ("Haven't read!");
         assert(fclose (code_of_command->test_file) != 0);
-        return ERROR_WITH_READ;
+        return PROC_ERROR_WITH_READ;
     }
 
-    return OK;
+    return PROC_SUCCESS;
 
 }

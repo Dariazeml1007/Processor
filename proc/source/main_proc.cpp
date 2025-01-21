@@ -24,7 +24,7 @@ int main()
     spu_ctor(&my_spu, DUMP_CODE);
 
 
-    // my_spu.registers[2] = -5;
+    //my_spu.registers[0] = 8;
     // my_spu.RAM[7] = 200;
 
 

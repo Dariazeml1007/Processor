@@ -18,7 +18,7 @@ int get_size_of_file (const char *name_of_file)
     if ((info_of_file = stat(name_of_file, &buffer)) != 0)
     {
         printf("stat failure error .%d\n", info_of_file);
-        return STAT_FILE_ERROR;
+        return -1;
     }
 
     return buffer.st_size;

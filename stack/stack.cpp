@@ -134,7 +134,6 @@ void stack_pop (Stack_t *stk, StackElem_t *x)
         *x = stk->data[stk->size];
         stk->data[stk->size] = stk->poison;
     }
-
     stk->hash_current = hash(stk);
 }
 

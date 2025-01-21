@@ -1,6 +1,9 @@
-in
-in
-je 0
-push 13
+jmp a:
+push 5
+b:
+push [5]
+jmp b:
+pop cx
+a:
 out
 hlt
