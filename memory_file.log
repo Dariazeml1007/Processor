@@ -1,9 +1,21 @@
 =========================================
-old address : 0x00A11724
+old address : 0x0106162C
 old capacity : 10
 =========================================
-new address : 0x00A11724
+new address : 0x0106162C
 new capacity : 5
+=========================================
+old address : 0x0106162C
+old capacity : 5
+=========================================
+new address : 0x0106162C
+new capacity : 2
+=========================================
+old address : 0x0106162C
+old capacity : 2
+=========================================
+new address : 0x0106162C
+new capacity : 4
 =========================================
 FREE
 address : 0x0061FE68

@@ -157,7 +157,6 @@ int assembler (asm_struct *my_asm)
 int fill_gaps_in_code (asm_struct *my_asm)
 {
     assert(my_asm);
-    bool flag = false;
     for (size_t i = 0; i < my_asm->p_labels->amount_of_labels; i++)
     {
         if (my_asm->p_labels->label_array[i].is_set)
@@ -166,13 +165,7 @@ int fill_gaps_in_code (asm_struct *my_asm)
                 if (i == my_asm->p_labels->fix_up_array[j].index_label)
                 {
                     my_asm->code[my_asm->p_labels->fix_up_array[j].ip_use] = my_asm->p_labels->label_array[i].ip;
-                    flag = true;
                 }
-            if (!flag)
-            {
-                printf ("Not recognised label, fix up");
-                assert(0);
-            }
         }
         else
         {
@@ -405,8 +398,6 @@ int arg_push_pop (asm_struct *my_asm, size_t *ip)
 
     return ASM_ERROR_WITH_READ;
 }
-
-
 
 int asm_ctor (asm_struct *my_asm)
 {

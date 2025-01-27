@@ -30,7 +30,7 @@ int main()
 
     StackElem_t POISON = 66666;
     stack_ctor (&my_spu.stk, 10, POISON);
-    stack_push(&my_spu.stk, 40);
+    //stack_push(&my_spu.stk, 40);
     read_commands (&my_spu.code_of_command, OUTPUT_FILE);
 
     dump_code (&my_spu);

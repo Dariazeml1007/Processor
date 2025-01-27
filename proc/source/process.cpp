@@ -20,8 +20,8 @@ struct functions_struct
 
 functions_struct functions_array[] =
 {
-    {&get_arg_push,     PUSH},
-    {&get_arg_pop, POP},
+    {&get_arg_push,PUSH},
+    {&get_arg_pop, POP },
     {&add,         ADD },
     {&sub,         SUB },
     {&mul,         MUL },
@@ -70,14 +70,14 @@ int process_code (SPU *my_spu)
 
     my_spu->ip = -1;
     int flag = 1;
-
-    while (1)
+    int k = 0;
+    while (k < 150)
     {
         my_spu->ip += 1;
-        STACK_DUMP(&my_spu->stk);
+        //STACK_DUMP(&my_spu->stk);
         dump_code(my_spu);
         int elem = my_spu->code_of_command.code[my_spu->ip];
-        printf ("%d\n", elem);
+        //printf ("%d\n", elem);
         if (elem == HLT)
         {
             break;
@@ -96,7 +96,11 @@ int process_code (SPU *my_spu)
             }
 
         }
-
+        k++;
+        if (k == 147)
+        {
+            printf ("maybe error");
+        }
         if (flag == 0)
             printf ("problem %d\n", elem);
 
@@ -133,6 +137,13 @@ void dump_code (SPU *my_spu)
     for (int i = 0; i <  25; i++)
     {
         fprintf(my_spu->dump, " %d", my_spu->RAM[i]);
+    }
+
+    fprintf (my_spu->dump, "\n----------------------------------------\n");
+    fprintf (my_spu->dump, "STK status\n----------------------------------------\n");
+    for (size_t i = 0; i < my_spu->stk.capacity; i++)
+    {
+        fprintf(my_spu->dump, " %d", my_spu->stk.data[i]);
     }
 
 

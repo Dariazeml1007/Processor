@@ -134,6 +134,8 @@ void stack_pop (Stack_t *stk, StackElem_t *x)
         *x = stk->data[stk->size];
         stk->data[stk->size] = stk->poison;
     }
+    else
+        printf ("no elements in stack ");
     stk->hash_current = hash(stk);
 }
 

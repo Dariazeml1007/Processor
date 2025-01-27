@@ -32,7 +32,7 @@ int sub (SPU *my_spu)
     stack_pop(&my_spu->stk, &second_number);
 
     stack_push(&my_spu->stk, second_number - first_number);
-    printf ("%d %d\n", second_number, first_number);
+
     return 0;
 }
 
@@ -154,7 +154,7 @@ int get_arg_push(SPU *my_spu)
 int get_arg_pop(SPU *my_spu)
 {
     int arg_t = my_spu->code_of_command.code[my_spu->ip + 1];
-    printf ("arg_t %d\n", arg_t);
+
     int result = 0;
     int position = 0;
     stack_pop(&my_spu->stk, &result);
