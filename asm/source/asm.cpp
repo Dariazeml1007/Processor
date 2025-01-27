@@ -136,21 +136,6 @@ int assembler (asm_struct *my_asm)
 
     fill_gaps_in_code(my_asm);
 
-    for (size_t i = 0; i < amount_of_command; i++)
-        printf ("%d ",my_asm->code[i]);
-    printf("\n");
-
-    for (size_t i = 0; i < my_asm->p_labels->amount_of_fix_up; i++)
-    {
-        printf("index = %d, ip = %d", my_asm->p_labels->fix_up_array[i].index_label, my_asm->p_labels->fix_up_array[i].ip_use);
-    }
-    printf("\n");
-
-    printf ("amount of labels = %d\n", my_asm->p_labels->amount_of_labels);
-    for (size_t i = 0; i < my_asm->p_labels->amount_of_labels; i++)
-    {
-        printf("name = %s, addr = %p, ip = %d\n", my_asm->p_labels->label_array[i].name,&my_asm->p_labels->label_array[i].name, my_asm->p_labels->label_array[i].ip);
-    }
     return 0;
 }
 

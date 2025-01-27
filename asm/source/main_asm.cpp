@@ -30,7 +30,6 @@ int main(const int argc, const char* argv[])
         return FAILED;
     }
 
-    printf ("%d %s\n", argc, argv[1]);
     if (argc == 2)
     {
         strcpy(my_asm.input_file, argv[1]);
