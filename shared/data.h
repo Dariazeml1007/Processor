@@ -18,13 +18,12 @@ typedef enum
     CALL = 9,
     RET  = 10,
     JMP  = 11,
-    JA  =  12,
-    JB  =  13,
+    JA   = 12,
+    JB   = 13,
     JAE  = 14,
     JBE  = 15,
-    JE  =  16,
+    JE   = 16,
     JNE  = 17,
-    END = 18,
     HLT  = 0
 
 }Command;

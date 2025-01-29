@@ -37,7 +37,6 @@ Type_of_command massive_of_commands[] =
     {"jbe" , 15},
     {"je"  , 16},
     {"jne" , 17},
-    {"end" , 18},
     {"hlt" ,  0}
 };
 
@@ -95,10 +94,9 @@ int assembler (asm_struct *my_asm)
     fread(my_asm->buffer, sizeof(char), my_asm->size, my_asm->file_in);
     fseek(my_asm->file_in, 0, SEEK_SET);
 
-    //printf ("%d\n", my_asm->size);
     unsigned int amount_of_command = 0;
 
-    while (my_asm->buffer[my_asm->index] != '\0')
+    while (my_asm->buffer[my_asm->index] != '\0' && my_asm->buffer[my_asm->index] != '\n')
     {
         int type = type_of_command(my_asm);
 
@@ -118,9 +116,6 @@ int assembler (asm_struct *my_asm)
         }
         else
         {
-            if (type == END)
-                break;
-
             my_asm->code[amount_of_command++] = type;
 
             if (type == PUSH || type == POP)
