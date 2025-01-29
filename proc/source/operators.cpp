@@ -273,6 +273,26 @@ int jne (SPU *my_spu)
     return 0;
 }
 
+int call (SPU *my_spu)
+{
+    assert(my_spu);
+    stack_push(&my_spu->stk, my_spu->ip);
+    jmp(my_spu);
+
+    return 0;
+}
+
+int ret (SPU *my_spu)
+{
+    assert(my_spu);
+
+    int ip = 0;
+    stack_pop(&my_spu->stk, &ip);
+    my_spu->ip = ip + 1;
+
+    return 0;
+}
+
 bool if_above(int *x1, int* x2)
 {
     if ((*x1 - *x2) > 0)

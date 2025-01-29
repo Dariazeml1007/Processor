@@ -9,13 +9,31 @@ old address : 0x00FC2EA4
 old capacity : 5
 =========================================
 new address : 0x00FC2EA4
-new capacity : 2
+new capacity : 10
 =========================================
 old address : 0x00FC2EA4
-old capacity : 2
+old capacity : 10
 =========================================
-new address : 0x00FC2EA4
-new capacity : 4
+new address : 0x00FC167C
+new capacity : 20
+=========================================
+old address : 0x00FC167C
+old capacity : 20
+=========================================
+new address : 0x00FC167C
+new capacity : 10
+=========================================
+old address : 0x00FC167C
+old capacity : 10
+=========================================
+new address : 0x00FC167C
+new capacity : 5
+=========================================
+old address : 0x00FC167C
+old capacity : 5
+=========================================
+new address : 0x00FC167C
+new capacity : 2
 =========================================
 FREE
 address : 0x0061FE68

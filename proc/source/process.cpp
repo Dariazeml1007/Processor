@@ -28,6 +28,8 @@ functions_struct functions_array[] =
     {&divide,      DIV },
     {&out,         OUT },
     {&in,          IN  },
+    {&call,        CALL},
+    {&ret,         RET },
     {&jmp,         JMP },
     {&ja,          JA  },
     {&jb,          JB  },

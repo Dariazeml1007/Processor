@@ -1,0 +1,27 @@
+in
+pop cx
+call fact:
+push ax
+out
+hlt
+fact:
+    push cx
+    push 1
+    jne label:
+        push 1
+        pop ax
+        ret
+    label:
+    push cx
+    push cx
+    push 1
+    sub
+    pop cx
+    call fact:
+        push ax
+        mul
+        pop ax
+        ret
+end
+
+

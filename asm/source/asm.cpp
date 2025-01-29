@@ -28,13 +28,16 @@ Type_of_command massive_of_commands[] =
     {"div" ,  6},
     {"out" ,  7},
     {"in"  ,  8},
-    {"jmp" ,  9},
-    {"ja"  , 10},
-    {"jb"  , 11},
-    {"jae" , 12},
-    {"jbe" , 13},
-    {"je"  , 14},
-    {"jne" , 15},
+    {"call",  9},
+    {"ret" , 10},
+    {"jmp" , 11},
+    {"ja"  , 12},
+    {"jb"  , 13},
+    {"jae" , 14},
+    {"jbe" , 15},
+    {"je"  , 16},
+    {"jne" , 17},
+    {"end" , 18},
     {"hlt" ,  0}
 };
 
@@ -69,6 +72,10 @@ int skip_until_new_command (asm_struct *my_asm)
             my_asm->index++;
     my_asm->index++;
 
+    while (my_asm->buffer[my_asm->index] == ' ')
+        my_asm->index++;
+
+
     return 0;
 }
 int skip_spaces (asm_struct *my_asm)
@@ -76,6 +83,8 @@ int skip_spaces (asm_struct *my_asm)
     assert(my_asm);
     while (my_asm->buffer[my_asm->index] == ' ')
         my_asm->index++;
+
+
     return 0;
 }
 
@@ -86,15 +95,15 @@ int assembler (asm_struct *my_asm)
     fread(my_asm->buffer, sizeof(char), my_asm->size, my_asm->file_in);
     fseek(my_asm->file_in, 0, SEEK_SET);
 
-
+    //printf ("%d\n", my_asm->size);
     unsigned int amount_of_command = 0;
 
     while (my_asm->buffer[my_asm->index] != '\0')
     {
         int type = type_of_command(my_asm);
+
         if (type == ASM_POSSIBLE_LABEL)
         {
-
             char *label= (char *) calloc(50, sizeof(char));
             if (is_label(my_asm, &amount_of_command, label))
             {
@@ -106,10 +115,11 @@ int assembler (asm_struct *my_asm)
                 printf ("Wrong command");
                 assert(0);
             }
-
         }
         else
         {
+            if (type == END)
+                break;
 
             my_asm->code[amount_of_command++] = type;
 
@@ -118,24 +128,23 @@ int assembler (asm_struct *my_asm)
                 if (arg_push_pop(my_asm, &amount_of_command) == ASM_ERROR_WITH_READ)
                     printf("ERROR\n");
             }
-            if (type >= JMP && type <= JNE)
+            if ((type >= JMP && type <= JNE) || type == CALL)
             {
                 if (arg_jmp(my_asm, &amount_of_command) == ASM_ERROR_WITH_READ)
                     printf("ERROR\n");
 
             }
-            if (type == HLT)
-                break;
-
             skip_until_new_command(my_asm);
         }
     }
 
+    fill_gaps_in_code(my_asm);
+
     if (fwrite(my_asm->code, sizeof(int), amount_of_command, my_asm->file_out) != amount_of_command)
         printf("Problem with writing\n");
 
-    fill_gaps_in_code(my_asm);
-
+    for (size_t i = 0; i < amount_of_command; i++)
+        printf ("%d ", my_asm->code[i]);
     return 0;
 }
 
@@ -447,17 +456,3 @@ int asm_dtor (asm_struct *my_asm)
     return 0;
 }
 
-// int skip_brackets (char **command)
-// {
-//     int i = 0, j = 0;
-//     printf ("command %s\n", *command);
-//     while (*command[i] != '\0')
-//     {
-//         if (*command[i] != '[' && *command[i] != ']')
-//             *command[j++] = *command[i];
-//         i++;
-//     }
-//     *command[j] = '\0';
-//     printf ("command %s\n", *command);
-//     return 0;
-// }

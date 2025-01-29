@@ -11,6 +11,8 @@ int out         (SPU *my_spu);
 int in          (SPU *my_spu);
 int get_arg_push(SPU *my_spu);
 int get_arg_pop (SPU *my_spu);
+int call        (SPU *my_spu);
+int ret         (SPU *my_spu);
 
 int jmp     (SPU *my_spu);
 int ja      (SPU *my_spu);

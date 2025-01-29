@@ -9,7 +9,7 @@
 #include "label.h"
 #include "asm.h"
 
-int jmp_at_label(labels *labels, char *label, size_t *ip )
+int jmp_at_label(labels *labels, char *label, size_t *ip)
 {
     assert(labels);
     assert(label);
@@ -53,7 +53,6 @@ int definition_of_label(labels *labels, char *label, size_t *ip )
     {
         if (strcmp(labels->label_array[i].name, label) == 0)
         {
-
             if (labels->label_array[i].is_set)
             {
                 printf ("Repeating label");
@@ -71,7 +70,6 @@ int definition_of_label(labels *labels, char *label, size_t *ip )
 
     if (!flag)
     {
-
         labels->label_array[labels->amount_of_labels].name = label;
         labels->label_array[labels->amount_of_labels].is_set = true;
         labels->label_array[labels->amount_of_labels++].ip = *ip;

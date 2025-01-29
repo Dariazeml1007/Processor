@@ -15,13 +15,16 @@ typedef enum
     DIV  = 6,
     OUT  = 7,
     IN   = 8,
-    JMP  = 9,
-    JA  =  10,
-    JB  =  11,
-    JAE  = 12,
-    JBE  = 13,
-    JE  =  14,
-    JNE  = 15,
+    CALL = 9,
+    RET  = 10,
+    JMP  = 11,
+    JA  =  12,
+    JB  =  13,
+    JAE  = 14,
+    JBE  = 15,
+    JE  =  16,
+    JNE  = 17,
+    END = 18,
     HLT  = 0
 
 }Command;
